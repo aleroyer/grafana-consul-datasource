@@ -1,8 +1,8 @@
 // import { beforeEach, describe, expect, it } from './lib/common';
 import TemplateSrvStub from './lib/TemplateSrvStub';
-import {Datasource, QueryCtrl} from '../src/module';
+import { Datasource, QueryCtrl } from '../src/module';
 import q from 'q';
-import {beforeEach, describe, expect, it} from "./lib/common";
+import { beforeEach, describe, expect, it } from "./lib/common";
 
 describe('ConsulDatasource', () => {
     const ctx: any = {
@@ -15,7 +15,7 @@ describe('ConsulDatasource', () => {
 
     it('check default values', (done) => {
         let cq = ctx.qc;
-        expect(cq.formats).toHaveLength(2);
+        expect(cq.formats).toHaveLength(3);
         expect(cq.target.format).toBe("timeseries");
         expect(cq.target.type).toBe("get");
         done()

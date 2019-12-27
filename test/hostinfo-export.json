@@ -1,0 +1,7 @@
+[
+    {
+        "key": "inventory/my-server/hostinfo",
+        "flags": 0,
+        "value": "{\"timestamp\":1577146188,\"format_version\":1,\"data\":{\"chassis\":{\"kind\":\"Physical\"},\"cpu\":{\"nb_cores\":16,\"nb_threads\":32,\"model\":\"Big CPU @ 2.40GHz\"},\"hostname\":{\"identifier\":\"my-server\",\"fqdn\":\"my-server.myfq.dn\",\"pop\":\"dc1\"},\"dmi\":{\"manufacturer\":\"Hardware Manufacturer\",\"product\":\"Test\",\"serial\":\"XYZ01234\"},\"ip\":{\"lo\":[\"127.0.0.1\"],\"eth0\":[\"10.0.0.42\"]},\"mac\":{\"eth0\":\"00:11:22:33:44:55\",\"lo\":\"00:00:00:00:00:00\"},\"lldp\":{\"interface\":[{\"name\":\"eth0\",\"chassis\":{\"name\":\"switch-01\"},\"port\":{\"id\":\"ge-0/0/1\"},\"vlans\":[1,2,3]}]},\"manufacturer\":{\"chassis\":{\"model\":\"Test\",\"chassis_service_tag\":\"XYZ01234\",\"module_service_tag\":null},\"nics\":[{\"index\":0,\"iface\":\"eth0\",\"phys_iface\":\"lom1\",\"vendor\":\"Network Manufacturer\",\"description\":\"10 Gigabit SuperCard\",\"slot\":\"embedded\"}],\"disks\":[{\"id\":\"0\",\"status\":\"ok\",\"media\":\"SSD\",\"bus_protocol\":\"SATA\",\"vendor_id\":\"SuperDrive\",\"product_id\":\"SD12345HDXPOUET\",\"serial_number\":\"XXXXXXXXXXXXXXX123\",\"certification\":\"SuperDrive\",\"capacity_gb\":500}]},\"provider\":{\"server_warranty\":{\"start\":\"2020-01-01\",\"end\":\"2021-01-01\"},\"server_location\":{\"dc\":\"Datacenter 1\",\"corridor\":\"A1\",\"rack\":\"B02\",\"rack_offset\":42,\"rack_size\":47,\"server_size\":1}}}}"
+    }
+]

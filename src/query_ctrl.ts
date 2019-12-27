@@ -7,13 +7,22 @@ export class ConsulDatasourceQueryCtrl extends QueryCtrl {
   private formats: any;
   private types: any;
 
-    /** @ngInject **/
+  /** @ngInject **/
   constructor($scope, $injector, private templateSrv) {
     super($scope, $injector);
 
-        // special handling when in table panel
+    // special handling when in table panel
     if (!this.target.format) {
-      this.target.format = this.panelCtrl.panel.type === 'table' ? 'table' : 'timeseries';
+      switch (this.panelCtrl.panel.type) {
+        case 'table':
+        case 'tablejson':
+          this.target.format = 'table';
+          break;
+
+        default:
+          this.target.format = 'timeseries';
+          break;
+      }
     }
 
     this.target.target = this.target.target || '';
@@ -23,14 +32,15 @@ export class ConsulDatasourceQueryCtrl extends QueryCtrl {
     this.target.data = this.target.data || '';
 
     this.formats = [
-            { text: 'Time series', value: 'timeseries' },
-            { text: 'Table', value: 'table' },
+      { text: 'Time series', value: 'timeseries' },
+      { text: 'Table', value: 'table' },
+      { text: 'Table JSON', value: 'tablejson' },
     ];
     this.types = [
-            { text: 'get value', value: 'get' },
-            { text: 'get direct subkeys', value: 'keys' },
-            { text: 'get subkeys as tags', value: 'tags' },
-            { text: 'get subkeys recursive as tags', value: 'tagsrec' },
+      { text: 'get value', value: 'get' },
+      { text: 'get direct subkeys', value: 'keys' },
+      { text: 'get subkeys as tags', value: 'tags' },
+      { text: 'get subkeys recursive as tags', value: 'tagsrec' },
     ];
   }
 

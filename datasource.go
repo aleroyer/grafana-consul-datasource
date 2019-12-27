@@ -13,6 +13,7 @@ import (
 	"github.com/grafana/grafana_plugin_model/go/datasource"
 	"github.com/hashicorp/consul/api"
 	"github.com/hashicorp/go-plugin"
+	"github.com/savaki/jq"
 	"golang.org/x/net/context"
 )
 
@@ -51,6 +52,8 @@ func handleQueries(consul *api.Client, consulToken string, queries []query) *dat
 		return handleTimeseries(consul, queries)
 	case "table":
 		return handleTable(consul, queries)
+	case "tablejson":
+		return handleTableJSON(consul, queries)
 	}
 	return generateErrorResponse(fmt.Errorf("unknown format, nothing to handle"), "")
 }
@@ -225,6 +228,90 @@ func handleTable(consul *api.Client, qs []query) *datasource.DatasourceResponse 
 						tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_INT64, Int64Value: i})
 					}
 				}
+			}
+			tableRows = append(tableRows, &datasource.TableRow{Values: tableRowValues})
+		}
+		qrs = append(qrs, &datasource.QueryResult{
+			RefId: q.RefID,
+			Tables: []*datasource.Table{
+				{
+					Columns: tableCols,
+					Rows:    tableRows,
+				},
+			},
+		})
+	}
+
+	return &datasource.DatasourceResponse{Results: qrs}
+}
+
+func handleTableJSON(consul *api.Client, qs []query) *datasource.DatasourceResponse {
+
+	var qrs []*datasource.QueryResult
+	for _, q := range qs {
+
+		targetRegex := strings.Replace(q.Target, "*", ".*", -1)
+		regex, err := regexp.Compile(targetRegex)
+		if err != nil {
+			return generateErrorResponse(fmt.Errorf("error compiling regex: %v", err), q.RefID)
+		}
+
+		firstStar := strings.Index(q.Target, "*")
+		prefix := q.Target
+		if firstStar > 0 {
+			prefix = q.Target[:firstStar]
+		}
+
+		columns := strings.Split(q.Columns, ",")
+
+		keys, _, err := consul.KV().Keys(prefix, "", &api.QueryOptions{})
+		if err != nil {
+			return generateErrorResponse(fmt.Errorf("error gettings keys %s from consul: %v", prefix, err), q.RefID)
+		}
+
+		var matchingKeys []string
+		for _, key := range keys {
+			if regex.Match([]byte(key)) {
+				matchingKeys = append(matchingKeys, key)
+			}
+		}
+
+		var tableCols []*datasource.TableColumn
+		var tableRows []*datasource.TableRow
+
+		for i := 0; i < len(matchingKeys); i++ {
+			firstRow := i == 0
+
+			var tableRowValues []*datasource.RowValue
+
+			for _, col := range columns {
+				key := matchingKeys[i]
+
+				if firstRow {
+					tableCols = append(tableCols, &datasource.TableColumn{Name: col})
+				}
+
+				var jsonKey []byte
+				kv, _, err := consul.KV().Get(key, &api.QueryOptions{})
+				if err != nil || kv == nil {
+					tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_STRING, StringValue: "Not Found"})
+				} else {
+					op, err := jq.Parse(col)
+					if err != nil {
+						tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_STRING, StringValue: "Invalid JQ query"})
+					}
+					jsonKey = kv.Value
+					value, err := op.Apply(jsonKey)
+					if err != nil {
+						tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_STRING, StringValue: "No match found"})
+					}
+					if i, err := strconv.ParseInt(string(value), 10, 64); err != nil {
+						tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_STRING, StringValue: string(value)})
+					} else {
+						tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_INT64, Int64Value: i})
+					}
+				}
+
 			}
 			tableRows = append(tableRows, &datasource.TableRow{Values: tableRowValues})
 		}

@@ -1,0 +1,68 @@
+{
+  "results": [
+    {
+      "refId": "test",
+      "tables": [
+        {
+          "columns": [
+            {
+              "name": ".data.hostname.identifier"
+            },
+            {
+              "name": ".data.hostname.fqdn"
+            },
+            {
+              "name": ".data.ip.eth0"
+            },
+            {
+              "name": ".data.cpu.nb_cores"
+            },
+            {
+              "name": ".data.manufacturer.chassis.chassis_service_tag"
+            },
+            {
+              "name": ".data.provider.server_location.dc"
+            },
+            {
+              "name": ".data.provider.server_location.rack"
+            }
+          ],
+          "rows": [
+            {
+              "values": [
+                {
+                  "kind": 4,
+                  "stringValue": "my-server"
+                },
+                {
+                  "kind": 4,
+                  "stringValue": "my-server-myfq.dn"
+                },
+                {
+                  "kind": 4,
+                  "stringValue": "[10.0.0.42]"
+                },
+                {
+                  "kind": 2,
+                  "int64Value": 16
+                },
+                {
+                  "kind": 4,
+                  "stringValue": "XYZ01234"
+                },
+                {
+                  "kind": 4,
+                  "stringValue": "Datacenter 1"
+                },
+                {
+                  "kind": 4,
+                  "stringValue": "B02"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

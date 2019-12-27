@@ -216,6 +216,15 @@ func TestHandleQueries(t *testing.T) {
 			},
 			golden: "table.json",
 		},
+		{
+			query: &query{
+				Format:  "tablejson",
+				Target:  "server/my-server",
+				Columns: ".data.hostname.identifier,.data.hostname.fqdn,.data.ip.eth0,.data.cpu.nb_cores,.data.manufacturer.chassis.chassis_service_tag,.data.provider.server_location.dc,.data.provider.server_location.rack",
+				RefID:   "test",
+			},
+			golden: "table-json.json",
+		},
 	}
 
 	srv, consul := setupTestServer(t)
