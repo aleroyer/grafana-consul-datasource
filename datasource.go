@@ -292,6 +292,7 @@ func handleTableJSON(consul *api.Client, qs []query) *datasource.DatasourceRespo
 				}
 
 				var jsonKey []byte
+				var stringJSON string
 				kv, _, err := consul.KV().Get(key, &api.QueryOptions{})
 				if err != nil || kv == nil {
 					tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_STRING, StringValue: "Not Found"})
@@ -300,13 +301,29 @@ func handleTableJSON(consul *api.Client, qs []query) *datasource.DatasourceRespo
 					if err != nil {
 						tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_STRING, StringValue: "Invalid JQ query"})
 					}
-					jsonKey = kv.Value
+					//jsonKey = kv.Value
+					if !json.Valid(kv.Value) {
+						stringJSON = string(kv.Value)
+						unquotedJSON := strings.TrimPrefix(stringJSON, "\"")
+						unquotedJSON = strings.TrimSuffix(unquotedJSON, "\"")
+						jsonKey = []byte(unquotedJSON)
+					} else {
+						jsonKey = kv.Value
+					}
+
 					value, err := op.Apply(jsonKey)
 					if err != nil {
 						tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_STRING, StringValue: "No match found"})
 					}
 					if i, err := strconv.ParseInt(string(value), 10, 64); err != nil {
-						tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_STRING, StringValue: string(value)})
+						unquotedValue, unquoteErr := strconv.Unquote(string(value))
+						if unquoteErr != nil {
+							unquotedValue = string(value)
+							unquotedValue = strings.TrimPrefix(unquotedValue, "\"")
+							unquotedValue = strings.TrimSuffix(unquotedValue, "\"")
+							unquotedValue = strings.ReplaceAll(unquotedValue, "\"", "'")
+						}
+						tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_STRING, StringValue: unquotedValue})
 					} else {
 						tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_INT64, Int64Value: i})
 					}

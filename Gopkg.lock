@@ -3,7 +3,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:789ec3efc309cbc385e328ca4ace6e54771eca90fff9f0551bbc41ede6a93892"
+  digest = "1:823d6cdd461935cd426e76e4eec90c22938db664054eabda0bcf63ec0274566e"
   name = "github.com/golang/protobuf"
   packages = [
     "proto",
@@ -24,7 +24,7 @@
   revision = "84176c64269d8060f99e750ee8aba6f062753336"
 
 [[projects]]
-  digest = "1:25c2c1dfdea99f7b8d192d328888686d8907b440b88e6ab5418809904c6c0b26"
+  digest = "1:a669874596bd3b86de5f32d6cd1f73fb24127c37a63acf9df32259adc926b1be"
   name = "github.com/hashicorp/consul"
   packages = [
     "api",
@@ -61,7 +61,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:35e9b9d8a799b6d4d4196f19cba3b0ffabf3c96b43eaedf388263d033c066616"
+  digest = "1:45aad874d3c7d5e8610427c81870fb54970b981692930ec2a319ce4cb89d7a00"
   name = "github.com/hashicorp/go-rootcerts"
   packages = ["."]
   pruneopts = "UT"
@@ -76,7 +76,7 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:8926b09bc7e669ef6aec95f6ad5abb7240f232cc217f3841f9097d5c8c482666"
+  digest = "1:0dd7b7b01769f9df356dc99f9e4144bdbabf6c79041ea7c0892379c5737f3c44"
   name = "github.com/hashicorp/serf"
   packages = ["coordinate"]
   pruneopts = "UT"
@@ -132,6 +132,17 @@
   version = "v0.8.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:45ed9e09a140c93e437e1e9634258040148f2cd18b28758a21b084002eca8c8c"
+  name = "github.com/savaki/jq"
+  packages = [
+    ".",
+    "scanner",
+  ]
+  pruneopts = "UT"
+  revision = "0e6baecebbf8a24a6590d3fc8232165008d6e5d8"
+
+[[projects]]
   digest = "1:d917313f309bda80d27274d53985bc65651f81a5b66b820749ac7f8ef061fd04"
   name = "github.com/sergi/go-diff"
   packages = ["diffmatchpatch"]
@@ -141,7 +152,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:1427ef3c5200ade53e1569b34a7fd49dff8df0c2b3cdb9539a727f69ae5eddfa"
+  digest = "1:deafe4ab271911fec7de5b693d7faae3f38796d9eb8622e2b9e7df42bb3dfea9"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -164,7 +175,7 @@
   revision = "fa5fdf94c78965f1aa8423f0cc50b8b8d728b05a"
 
 [[projects]]
-  digest = "1:7509ba4347d1f8de6ae9be8818b0cd1abc3deeffe28aeaf4be6d4b6b5178d9ca"
+  digest = "1:a2ab62866c75542dd18d2b069fec854577a20211d7c0ea6ae746072a1dccdd18"
   name = "golang.org/x/text"
   packages = [
     "collate",
@@ -195,7 +206,7 @@
   revision = "11092d34479b07829b72e10713b159248caf5dad"
 
 [[projects]]
-  digest = "1:48d3dac13b348371174b07bfc2fc9b6df2d57f39a7412509275abc692df0da01"
+  digest = "1:047efbc3c9a51f3002b0002f92543857d372654a676fb6b01931982cd80467dd"
   name = "google.golang.org/grpc"
   packages = [
     ".",
@@ -239,6 +250,7 @@
     "github.com/hashicorp/consul/api",
     "github.com/hashicorp/consul/testutil",
     "github.com/hashicorp/go-plugin",
+    "github.com/savaki/jq",
     "github.com/sergi/go-diff/diffmatchpatch",
     "golang.org/x/net/context",
   ]

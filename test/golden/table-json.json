@@ -36,11 +36,11 @@
                 },
                 {
                   "kind": 4,
-                  "stringValue": "my-server-myfq.dn"
+                  "stringValue": "my-server.myfq.dn"
                 },
                 {
                   "kind": 4,
-                  "stringValue": "[10.0.0.42]"
+                  "stringValue": "['10.0.0.42']"
                 },
                 {
                   "kind": 2,
