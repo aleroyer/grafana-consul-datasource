@@ -291,8 +291,7 @@ func handleTableJSON(consul *api.Client, qs []query) *datasource.DatasourceRespo
 					tableCols = append(tableCols, &datasource.TableColumn{Name: col})
 				}
 
-				var jsonKey []byte
-				var stringJSON string
+				var decodedJSON map[string]interface{}
 				kv, _, err := consul.KV().Get(key, &api.QueryOptions{})
 				if err != nil || kv == nil {
 					tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_STRING, StringValue: "Not Found"})
@@ -301,27 +300,20 @@ func handleTableJSON(consul *api.Client, qs []query) *datasource.DatasourceRespo
 					if err != nil {
 						tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_STRING, StringValue: "Invalid JQ query"})
 					}
-					//jsonKey = kv.Value
-					if !json.Valid(kv.Value) {
-						stringJSON = string(kv.Value)
-						unquotedJSON := strings.TrimPrefix(stringJSON, "\"")
-						unquotedJSON = strings.TrimSuffix(unquotedJSON, "\"")
-						jsonKey = []byte(unquotedJSON)
-					} else {
-						jsonKey = kv.Value
-					}
 
-					value, err := op.Apply(jsonKey)
+					err = json.Unmarshal(cleanJSON(kv.Value), &decodedJSON)
+					b, _ := json.Marshal(decodedJSON)
+
+					value, err := op.Apply(b)
 					if err != nil {
 						tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_STRING, StringValue: "No match found"})
 					}
 					if i, err := strconv.ParseInt(string(value), 10, 64); err != nil {
 						unquotedValue, unquoteErr := strconv.Unquote(string(value))
 						if unquoteErr != nil {
+							// This might be an array, just replace " with ' to print it as is
 							unquotedValue = string(value)
-							unquotedValue = strings.TrimPrefix(unquotedValue, "\"")
-							unquotedValue = strings.TrimSuffix(unquotedValue, "\"")
-							unquotedValue = strings.ReplaceAll(unquotedValue, "\"", "'")
+							unquotedValue = strings.ReplaceAll(unquotedValue, `"`, `'`)
 						}
 						tableRowValues = append(tableRowValues, &datasource.RowValue{Kind: datasource.RowValue_TYPE_STRING, StringValue: unquotedValue})
 					} else {
@@ -353,6 +345,21 @@ func calculateColumnKey(key string, col string) string {
 		col = strings.TrimPrefix(col, "../")
 	}
 	return path.Join(key, col)
+}
+
+func cleanJSON(bytes []byte) []byte {
+	var testJSON map[string]interface{}
+	err := json.Unmarshal(bytes, &testJSON)
+	if err == nil {
+		return bytes
+	}
+
+	s := string(bytes)
+	s = strings.TrimPrefix(s, `"`)
+	s = strings.TrimSuffix(s, `"`)
+	s = strings.ReplaceAll(s, `\`, ``)
+
+	return []byte(s)
 }
 
 func generateQueryResultFromKVPairs(kvs []*api.KVPair) (*datasource.QueryResult, error) {
